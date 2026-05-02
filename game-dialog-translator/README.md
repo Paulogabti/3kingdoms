@@ -50,3 +50,23 @@ python cli.py validate --original "arquivo.txt" --translated "arquivo.pt-BR.txt"
 ## Progresso
 - Salvo em `.progress/<hash>.jsonl`.
 - Ao reabrir o mesmo arquivo, a ferramenta reaproveita traduções já concluídas (se overwrite desmarcado).
+
+## USANDO SOMENTE CHATGPT PLUS, SEM API
+
+Este modo **não usa API OpenAI**. O fluxo é manual:
+1. Gere o próximo lote manual (UI ou CLI).
+2. Copie o prompt gerado pela ferramenta.
+3. Cole no ChatGPT web (Plus).
+4. Copie a resposta em JSON.
+5. Cole de volta na ferramenta para importar.
+6. A ferramenta valida placeholders, estrutura, linhas e salva o progresso.
+7. Exporte normalmente ao final para `.pt-BR.txt`.
+
+Comandos CLI manuais:
+```bash
+python cli.py manual next-batch --input "arquivo.txt" --batch-size 100
+python cli.py manual import-response --input "arquivo.txt" --response "resposta_batch_001.json"
+python cli.py manual export --input "arquivo.txt" --output-dir "saida"
+```
+
+> Este projeto não automatiza o navegador nem extrai respostas automaticamente do ChatGPT. O fluxo é manual para manter o uso adequado e evitar dependência de scraping ou automação instável.
