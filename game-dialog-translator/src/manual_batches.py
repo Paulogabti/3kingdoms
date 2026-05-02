@@ -42,7 +42,7 @@ Formato obrigatório da resposta:
 
 Agora traduza este lote:
 
-{batch_json}
+__BATCH_JSON__
 """
 
 
@@ -103,7 +103,8 @@ def build_next_manual_batch(lines: list[ParsedLine], progress: dict[int, Progres
         bundle = protect_placeholders(line.english_part)
         token_maps[line.line_number] = bundle.token_to_original
         items.append({"line_number": line.line_number, "english_text": bundle.protected_text})
-    prompt = PROMPT_TEMPLATE.format(batch_json=json.dumps(items, ensure_ascii=False, indent=2))
+    batch_json = json.dumps(items, ensure_ascii=False, indent=2)
+    prompt = PROMPT_TEMPLATE.replace("__BATCH_JSON__", batch_json)
     batch_id = f"batch-{idx:03d}"
     return ManualBatch(batch_id=batch_id, index=idx, start_line=chosen[0].line_number, end_line=chosen[-1].line_number, items=items, prompt=prompt, token_maps=token_maps)
 
