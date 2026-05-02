@@ -13,13 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 class Translator:
-    def __init__(self, model: str):
-        if not OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY não configurada.")
-        self.client = OpenAI(api_key=OPENAI_API_KEY)
+    def __init__(self, model: str, dry_run: bool = False):
         self.model = model
+        self.dry_run = dry_run
+        self.client = None
+        if not dry_run:
+            if not OPENAI_API_KEY:
+                raise ValueError("OPENAI_API_KEY não configurada.")
+            self.client = OpenAI(api_key=OPENAI_API_KEY)
+
+    def _fake_translate(self, text: str) -> str:
+        return f"[PT-BR] {text}" if text.strip() else text
 
     def translate_batch(self, items: list[dict]) -> dict[int, str]:
+        if self.dry_run:
+            return {it["line_number"]: self._fake_translate(it["text"]) for it in items}
+
         pending = items[:]
         results: dict[int, str] = {}
         retries = 0
