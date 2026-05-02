@@ -27,7 +27,7 @@ if mode == "API OpenAI" and not OPENAI_API_KEY:
 uploaded_files = st.file_uploader("Selecione arquivos .txt", type=["txt"], accept_multiple_files=True)
 output_dir = st.text_input("Pasta de saída", value="output")
 model = st.text_input("Modelo OpenAI", value=OPENAI_MODEL)
-batch_size = st.selectbox("Tamanho do lote", [10, 20, 30, 50, 100, 200], index=1)
+batch_size = st.selectbox("Tamanho do lote", [5, 10, 20, 50, 100, 200], index=2)
 overwrite = st.checkbox("Sobrescrever traduções existentes", value=False)
 allow_pending = st.checkbox("Permitir exportação com pendências", value=True)
 
@@ -65,7 +65,7 @@ if uploaded_files:
             st.success(f"Concluído em {time.time() - start:.1f}s")
 
         if mode == "ChatGPT Manual":
-            batch = build_next_manual_batch(lines, progress, batch_size if batch_size in {20, 50, 100, 200} else 20, fh, uf.name)
+            batch = build_next_manual_batch(lines, progress, batch_size if batch_size in {5, 10, 20, 50, 100, 200} else 20, fh, uf.name)
             if not batch:
                 st.success("Sem pendências: tudo já traduzido para este arquivo.")
             else:
